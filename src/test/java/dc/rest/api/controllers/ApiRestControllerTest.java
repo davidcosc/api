@@ -22,7 +22,6 @@ public class ApiRestControllerTest {
 
     @Before
     public void setUp() throws Exception {
-        mockMvc = MockMvcBuilders.standaloneSetup(new ApiRestController()).setControllerAdvice(new RestControllerAdvice()).build();
         objectMapper = new ObjectMapper();
     }
 
@@ -32,6 +31,7 @@ public class ApiRestControllerTest {
         ArrayList<String> services = new ArrayList<String>();
         services.add("service1");
         services.add("service2");
+        mockMvc = MockMvcBuilders.standaloneSetup(new ApiRestController(services)).setControllerAdvice(new RestControllerAdvice()).build();
         //when
         MockHttpServletResponse response = mockMvc.perform(MockMvcRequestBuilders.get("/services")).andReturn().getResponse();
         System.out.println(objectMapper.writeValueAsString(services) + " ::: " + response.getContentAsString());
