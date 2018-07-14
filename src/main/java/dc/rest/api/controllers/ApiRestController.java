@@ -17,6 +17,9 @@ public class ApiRestController<T> {
 
     @GetMapping("/services")
     public ResponseEntity<?> getServices() {
+        if(type == null) {
+            throw new ServiceNotFoundException();
+        }
         return ResponseEntity.ok().body(type);
     }
 }
