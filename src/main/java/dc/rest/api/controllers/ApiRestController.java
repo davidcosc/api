@@ -8,15 +8,15 @@ import org.springframework.web.bind.annotation.RestController;
  * Created by david on 12.07.2018.
  */
 @RestController
-public class ApiRestController {
-    Object object;
+public class ApiRestController<T> {
+    T type;
 
-    public ApiRestController(Object object) {
-        this.object = object;
+    public ApiRestController(T type) {
+        this.type = type;
     }
 
     @GetMapping("/services")
     public ResponseEntity<?> getServices() {
-        return ResponseEntity.ok().body(object);
+        return ResponseEntity.ok().body(type);
     }
 }
