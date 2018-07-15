@@ -1,7 +1,7 @@
 package dc.rest.api.controllers;
 
 import dc.rest.api.model.ApiService;
-import dc.rest.api.model.ApiServiceBuilder;
+import dc.rest.api.model.ApiServiceFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,19 +12,19 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 public class ApiRestController {
-    ApiServiceBuilder apiServiceBuilder;
+    private ApiServiceFactory apiServiceFactory;
 
     @Autowired
-    public ApiRestController(ApiServiceBuilder apiServiceBuilder) {
-        this.apiServiceBuilder = apiServiceBuilder;
+    public ApiRestController(ApiServiceFactory apiServiceFactory) {
+        this.apiServiceFactory = apiServiceFactory;
     }
 
     @GetMapping("/services")
     public ResponseEntity<?> getServices() {
-        if(apiServiceBuilder == null) {
+        if(apiServiceFactory == null) {
             throw new ServiceNotFoundException();
         }
-        ApiService apiService = apiServiceBuilder.getDefaultService().build();
+        ApiService apiService = apiServiceFactory.factoryMethod();
         apiService.execute();
         return ResponseEntity.ok().body(apiService);
     }

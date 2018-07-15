@@ -1,8 +1,7 @@
 package dc.rest.api.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dc.rest.api.model.ApiServiceBuilder;
-import dc.rest.api.model.Service;
+import dc.rest.api.model.ApiServiceFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,7 +11,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import java.util.ArrayList;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -31,12 +29,12 @@ public class ApiRestControllerTest {
     @Test
     public void givenAGetRequestToServicesUriAndAListOfServices_whenGetServicesIsCalled_thenReturnListOfExistingServices() throws Exception {
         //given
-        ApiServiceBuilder apiServiceBuilder = new ApiServiceBuilder();
-        mockMvc = MockMvcBuilders.standaloneSetup(new ApiRestController(apiServiceBuilder.getDefaultService())).setControllerAdvice(new RestControllerAdvice()).build();
+        ApiServiceFactory apiServiceFactory = new ApiServiceFactory();
+        mockMvc = MockMvcBuilders.standaloneSetup(new ApiRestController(apiServiceFactory)).setControllerAdvice(new RestControllerAdvice()).build();
         //when
         MockHttpServletResponse response = mockMvc.perform(MockMvcRequestBuilders.get("/services")).andReturn().getResponse();
         //then
-        assertEquals(objectMapper.writeValueAsString(apiServiceBuilder.build()), response.getContentAsString());
+        assertEquals(objectMapper.writeValueAsString(apiServiceFactory.factoryMethod()), response.getContentAsString());
     }
 
     @Test
