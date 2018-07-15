@@ -1,6 +1,8 @@
 package dc.rest.api.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dc.rest.api.model.ApiServiceBuilder;
+import dc.rest.api.model.Service;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,15 +31,12 @@ public class ApiRestControllerTest {
     @Test
     public void givenAGetRequestToServicesUriAndAListOfServices_whenGetServicesIsCalled_thenReturnListOfExistingServices() throws Exception {
         //given
-        ArrayList<String> services = new ArrayList<String>();
-        services.add("service1");
-        services.add("service2");
-        mockMvc = MockMvcBuilders.standaloneSetup(new ApiRestController<ArrayList<String>>(services)).setControllerAdvice(new RestControllerAdvice()).build();
+        ApiServiceBuilder apiServiceBuilder = new ApiServiceBuilder();
+        mockMvc = MockMvcBuilders.standaloneSetup(new ApiRestController(apiServiceBuilder.getDefaultService())).setControllerAdvice(new RestControllerAdvice()).build();
         //when
         MockHttpServletResponse response = mockMvc.perform(MockMvcRequestBuilders.get("/services")).andReturn().getResponse();
         //then
-        System.out.println(objectMapper.writeValueAsString(services) + " ::: " + response.getContentAsString());
-        assertEquals(objectMapper.writeValueAsString(services), response.getContentAsString());
+        assertEquals(objectMapper.writeValueAsString(apiServiceBuilder.build()), response.getContentAsString());
     }
 
     @Test
@@ -45,11 +44,10 @@ public class ApiRestControllerTest {
         //given
         ServiceNotFoundException e = new ServiceNotFoundException();
         String[] error = {e.getMessage(), HttpStatus.NOT_FOUND.toString()};
-        mockMvc = MockMvcBuilders.standaloneSetup(new ApiRestController<Object>(null)).setControllerAdvice(new RestControllerAdvice()).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(new ApiRestController(null)).setControllerAdvice(new RestControllerAdvice()).build();
         //when
         MockHttpServletResponse response = mockMvc.perform(MockMvcRequestBuilders.get("/services")).andReturn().getResponse();
         //then
-        System.out.println(objectMapper.writeValueAsString(error) + " ::: " + response.getContentAsString());
         assertEquals(objectMapper.writeValueAsString(error), response.getContentAsString());
     }
 }
